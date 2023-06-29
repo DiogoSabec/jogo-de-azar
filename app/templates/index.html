@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Roleta</title>
+    <style>
+        #roleta {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            border: 16px solid #000;
+        }
+
+        .slice {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 0 150px 150px;
+            transform-origin: 150px 150px;
+        }
+
+        .slice:nth-child(1) {
+            border-color: transparent transparent red transparent;
+            transform: rotate(0deg);
+        }
+
+        .slice:nth-child(2) {
+            border-color: transparent transparent orange transparent;
+            transform: rotate(45deg);
+        }
+
+        .slice:nth-child(3) {
+            border-color: transparent transparent yellow transparent;
+            transform: rotate(90deg);
+        }
+
+        .slice:nth-child(4) {
+            border-color: transparent transparent green transparent;
+            transform: rotate(135deg);
+        }
+
+        .slice:nth-child(5) {
+            border-color: transparent transparent blue transparent;
+            transform: rotate(180deg);
+        }
+
+        .slice:nth-child(6) {
+            border-color: transparent transparent indigo transparent;
+            transform: rotate(225deg);
+        }
+
+        .slice:nth-child(7) {
+            border-color: transparent transparent violet transparent;
+            transform: rotate(270deg);
+        }
+
+        .slice:nth-child(8) {
+            border-color: transparent transparent pink transparent;
+            transform: rotate(315deg);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #roleta.spin {
+            animation: spin 3s linear forwards;
+        }
+        #ponteiro {
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 40px solid black;
+            position: relative;
+            left: 135px;
+            z-index: 1;
+        }
+
+        #roleta {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div id="ponteiro"></div>
+    <div id="roleta">
+        <div class="slice"></div>
+        <div class="slice"></div>
+        <div class="slice"></div>
+        <div class="slice"></div>
+        <div class="slice"></div>
+        <div class="slice"></div>
+        <div class="slice"></div>
+        <div class="slice"></div>
+    </div>
+
+    <select id="colorSelect">
+        <option value="red">Vermelho</option>
+        <option value="orange">Laranja</option>
+        <option value="yellow">Amarelo</option>
+        <option value="green">Verde</option>
+        <option value="blue">Azul</option>
+        <option value="indigo">Indigo</option>
+        <option value="violet">Violeta</option>
+        <option value="pink">Rosa</option>
+    </select>
+
+    <input id="valorAposta" type="number" min="0" placeholder="Valor da aposta">
+
+    <button onclick="apostar()">Apostar</button>
+
+    <p id="resultado"></p>
+
+    <script>
+        var mapColorToAngle = {
+            'red': -90,
+            'orange': -45,
+            'yellow': 0,
+            'green': 45,
+            'blue': 90,
+            'indigo': 135,
+            'violet': 180,
+            'pink': 225
+        };
+
+        function apostar() {
+            var colorSelect = document.getElementById("colorSelect");
+            var selectedColor = colorSelect.options[colorSelect.selectedIndex].value;
+            var valorAposta = document.getElementById("valorAposta").value;
+            var cores = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'pink'];
+            var corSorteada = cores[Math.floor(Math.random() * cores.length)];
+            var roleta = document.getElementById('roleta');
+            roleta.style.transform = 'rotate(' + mapColorToAngle[corSorteada + 360] + 'deg)';
+            roleta.classList.add('spin');
+
+            var roleta = document.getElementById('roleta');
+            roleta.style.transform = 'rotate(' + mapColorToAngle[corSorteada] + 'deg)';
+            roleta.classList.add('spin');
+
+            setTimeout(function() {
+                roleta.classList.remove('spin');
+                if(selectedColor == corSorteada) {
+                    document.getElementById('resultado').innerText = "Parabéns, você ganhou! Você apostou na cor " + selectedColor + " e a cor sorteada foi " + corSorteada;
+                } else {
+                    document.getElementById('resultado').innerText = "Infelizmente, você perdeu. Você apostou na cor " + selectedColor + ", mas a cor sorteada foi " + corSorteada;
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
