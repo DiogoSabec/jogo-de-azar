@@ -8,8 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css">
 
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
-    <script src="{% static 'js/login.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 
     <title>Entrar</title>
 
@@ -49,6 +48,7 @@
                         <button class="btn btn-primary btn-lg btn-block" type="submit">Entrar</button>
                   </form>
 
+                  <a href="{% url 'register' %}" class="btn btn-secondary btn-lg btn-block mt-3">Criar uma conta</a>
             </div>
           </div>
         </div>

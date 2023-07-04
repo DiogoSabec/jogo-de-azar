@@ -1,44 +1,53 @@
 from django.shortcuts import redirect, render
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from .models import *
-from django.contrib.auth import authenticate
-from django.contrib.auth import login as login_django
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
-# Create your views here.
+
+from django.shortcuts import render, redirect
+from .forms import UserRegistrationForm
+from django.contrib import messages
+from django.contrib.auth.models import User
 
 def register(request):
-    if request.method == "GET":
-        return render(request, 'register.html')
-    else:
-        username = request.POST.get('username') 
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        user = User.objects.get(username=username)
-        if user:
-            return HttpResponse('Já existe um usuário com este nome')
-        user = User.objects.create_user(username=username, email=email, password=password)
-        user.save()
-        return redirect('http://127.0.0.1:8000/login/')
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
 
-def login(request):
+            user = User.objects.create_user(username=username, email=email, password=password)
+            user.save()
+
+            messages.success(request, 'Registro efetuado com sucesso. Faça login para acessar sua conta.')
+            return redirect('login')
+        else:
+            messages.error(request, 'Erro no formulário. Verifique os dados informados.')
+    else:
+        form = UserRegistrationForm()
+        
+    context = {
+        'form': form
+    }
+    return render(request, 'register.html', context)
+
+def login_view(request):
     if request.method == "GET":
         return render(request, 'login.html')
-    else:
+    elif request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
         
         user = authenticate(username=username, password=password)
         
-        if user:
-            login_django(request, user)
+        if user is not None:
+            login(request, user)  # Pass the user object to the login() function
             return redirect('http://127.0.0.1:8000/index/')
         else:
             return HttpResponse("errado")
 
 @login_required 
 def index(request):
-    if request.user.is_authenticated:
-        return render(request, 'index.html')
-    return redirect('http://127.0.0.1:8000/login/')
-    
+    return render(request, 'index.html')
