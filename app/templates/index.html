@@ -6,29 +6,74 @@
     {% load static %}
     <script type="text/javascript" src="{% static '/js/roleta.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static '/css/style.css' %}">
+    
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.dark.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.0"></script>
-
     <style>
-        canvas#rouletteChart {
-            max-width: 300px;
-            max-height: 300px;
+        * {
+            margin: 0;
+            padding: 0;
         }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .container-login {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-login-user {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #roleta.spin {
+            animation: spin 3s linear forwards;
+        }
+
+        .pie-chart-container {
+            width: 300px;
+            height: 300px;
+        }
+
     </style>
 </head>
+
 <body class="bg-dark text-light">
+
     <div class="container">
+
         <h3>Wallet Balance: $<span id="walletBalance"></span></h3>
         <div class="input-group mb-3">
             <input id="amountInput" type="number" min="0" placeholder="Enter amount" class="form-control">
             <button onclick="addToWallet()" class="btn btn-primary">Add Funds</button>
         </div>
+        
         <p id="wallet"></p>
     </div>
 
     <div class="container d-flex justify-content-center align-items-center">
-        <canvas id="rouletteChart"></canvas>
+        <div class="container pie-chart-container">
+            <canvas id="pieChart" width="200" height="200"></canvas>
+        </div>
     </div>
 
     <div class="container">
@@ -64,79 +109,46 @@
         <button onclick="initializeMultiplicadores()" class="btn btn-primary">Jogar novamente</button>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const labels = ['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Indigo', 'Violet', 'Pink'];
-        const data = [1, 1, 1, 1, 1, 1, 1, 1];
-        const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'pink'];
+        var mapColorToAngle = {
+            'red': -90,
+            'orange': -45,
+            'yellow': 0,
+            'green': 45,
+            'blue': 90,
+            'indigo': 135,
+            'violet': 180,
+            'pink': 225
+        };
 
-        let rouletteChart = null;
 
-        function initializeRouletteChart() {
-            rouletteChart = new Chart('rouletteChart', {
-                type: 'pie',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: colors
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
+        // Get the canvas element for the pie chart
+        const pieChartCanvas = document.getElementById('pieChart');
+
+        // Generate random data for the pie chart
+        const chartData = {
+            labels: ['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Indigo', 'Violet', 'Pink'],
+            datasets: [{
+                data: [10, 10, 10, 10, 10, 10, 10, 10],
+                backgroundColor: ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'pink']
+            }]
+        };
+
+        // Create the pie chart
+        const pieChart = new Chart(pieChartCanvas, {
+            type: 'pie',
+            data: chartData,
+            options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false // Set display to false to hide the legend
                     }
                 }
-            });
-        }
-
-        function clearRouletteChart() {
-            if (rouletteChart !== null) {
-                rouletteChart.destroy();
-                rouletteChart = null;
             }
-            initializeRouletteChart();
-        }
+        });	
 
-        function spinRoulette() {
-            const spinCount = 30; // Número de giros
-            const spinDuration = 100; // Duração de cada giro em milissegundos
-            let spinIndex = 0; // Índice de giro atual
-
-            const spinInterval = setInterval(() => {
-                // Atualizar o gráfico da roleta com os novos valores
-                const currentIndex = spinIndex % labels.length;
-                data[currentIndex] += 1;
-                rouletteChart.update();
-
-                // Atualizar o resultado da roleta com a cor atual
-                const resultadoElement = document.getElementById('resultado');
-                resultadoElement.innerText = `Resultado: ${colors[currentIndex]}`;
-
-                spinIndex++;
-
-                if (spinIndex === spinCount) {
-                    clearInterval(spinInterval);
-                }
-            }, spinDuration);
-        }
-
-        function apostar() {
-            const valorAposta = parseInt(document.getElementById('valorAposta').value);
-            if (valorAposta > 0) {
-                clearRouletteChart(); // Reiniciar o gráfico da roleta
-                // Chame a função spinRoulette() para girar a roleta após o jogador fazer a aposta
-                spinRoulette();
-            } else {
-                alert('Por favor, insira um valor de aposta válido.');
-            }
-        }
-
-        initializeRouletteChart(); // Inicializar o gráfico da roleta ao carregar a página
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
