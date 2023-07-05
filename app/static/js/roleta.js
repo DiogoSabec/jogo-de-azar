@@ -15,7 +15,7 @@ function loadWalletBalance() {
 
 function withdrawFromWallet(withdrawAmount) {
     if (withdrawAmount > walletBalance) {
-        alert("Insufficient funds. Cannot withdraw more than the current balance.");
+        alert("Saldo insuficiente.");
         return;
     }
 
@@ -31,7 +31,7 @@ function addToWallet() {
     var amount = parseFloat(amountInput.value);
 
     if (isNaN(amount) || amount <= 0) {
-        alert("Please enter a valid amount to add to your wallet.");
+        alert("Digite uma quantidade valida para acidionar a sua carteira.");
         return;
     }
 
@@ -55,13 +55,9 @@ function apostar() {
     }
 
     if (valorAposta > walletBalance) {
-        alert("Insufficient funds. Cannot bet more than the current balance.");
+        alert("Insufficient funds. Please add more money to your wallet.");
         return;
     }
-
-    // Deduzir o valor da aposta do saldo da carteira
-    walletBalance -= valorAposta;
-    updateWalletBalance();
 
     var cores = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'pink'];
     var corSorteada = cores[Math.floor(Math.random() * cores.length)];
@@ -73,14 +69,21 @@ function apostar() {
         updateWalletBalance();
         document.getElementById('resultado').innerText = "Congratulations! You won! You bet on the color " + selectedColor + " and the drawn color was " + corSorteada + ". You earned $" + ganho.toFixed(2) + ".";
     } else {
-        document.getElementById('resultado').innerText = "Sorry, you lost. You bet on the color " + selectedColor + ", but the drawn color was " + corSorteada + ".";
+        var multiplier = parseFloat(document.getElementById(selectedColor).textContent);
+        var aaa = valorAposta / multiplier;
+        var perda = valorAposta - aaa;
+        walletBalance -= perda;
+
+
+        document.getElementById('resultado').innerText = "Sorry, you lost. You bet on the color " + selectedColor + ", but the drawn color was " + corSorteada + ". You lost $" + perda.toFixed(2) + ".";
+        updateWalletBalance();
+        
     }
 
-    // Salve o novo saldo da carteira no Local Storage
-    localStorage.setItem("walletBalance", walletBalance);
-
-    valorApostaInput.value = "";
+        // Salve o novo saldo da carteira no Local Storage
+        localStorage.setItem("walletBalance", walletBalance);
 }
+
 
 document.getElementById("withdrawForm").addEventListener("submit", function(event) {
     event.preventDefault();
@@ -89,5 +92,30 @@ document.getElementById("withdrawForm").addEventListener("submit", function(even
     withdrawFromWallet(withdrawAmount);
     withdrawAmountInput.value = "";
 });
+
+function generateRandomMultipliers() {
+    const multipliers = {
+        red: (Math.random() * 0.5) + 1,
+        orange: (Math.random() * 0.5) + 1,
+        yellow: (Math.random() * 0.5) + 1,
+        green: (Math.random() * 0.5) + 1,
+        blue: (Math.random() * 0.5) + 1,
+        indigo: (Math.random() * 0.5) + 1,
+        violet: (Math.random() * 0.5) + 1,
+        pink: (Math.random() * 0.5) + 1,
+    };
+    return multipliers;
+}
+
+function initializeMultiplicadores() {
+    var multipliers = generateRandomMultipliers();
+    for (var color in multipliers) {
+        if (multipliers.hasOwnProperty(color)) {
+            var multiplierElement = document.getElementById(color);
+            multiplierElement.textContent = multipliers[color].toFixed(2);
+        }
+    }
+}
+
 
 loadWalletBalance();

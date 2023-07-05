@@ -7,17 +7,20 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <script type="text/javascript" src="{% static '/js/roleta.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    
     <title>Conta do Usuário</title>
 </head>
+
 <body>
     <div class="container">
-        <h3>Wallet Balance: $<span id="walletBalance"></span></h3>
+        <h3>Dinheiro na Carteira: $<span id="walletBalance"></span></h3>
         <div class="input-group mb-3">
-            <input id="amountInput" type="number" min="0" placeholder="Enter amount" class="form-control">
+            <input id="amountInput" type="number" min="0" placeholder="Digite a quantidade" class="form-control">
             <div class="input-group-append">
-                <button onclick="addToWallet()" class="btn btn-primary">Add Funds</button>
+                <button onclick="addToWallet()" class="btn btn-primary">Adicionar dinheiro</button>
             </div>
         </div>
         
@@ -25,10 +28,10 @@
         <h3>Sacar o dinheiro:</h3>
         <form id="withdrawForm">
             <div class="form-group">
-                <label for="withdrawAmount">Withdraw Amount:</label>
+                <label for="withdrawAmount">Quantidade do Saque:</label>
                 <input type="number" id="withdrawAmount" required class="form-control">
             </div>
-            <button type="submit" class="btn btn-primary">Withdraw</button>
+            <button type="submit" class="btn btn-primary">Sacar</button>
         </form>
     </div>
 
