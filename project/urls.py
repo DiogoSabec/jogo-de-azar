@@ -7,5 +7,5 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('register/', views.register, name='register'),
     path('admin/', admin.site.urls),
-    path('balance/<int:user_id>/add/', views.add_balance, name='add_balance'),
+    path('balance/', views.balance, name='balance'),
 ]

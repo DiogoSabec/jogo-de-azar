@@ -12,7 +12,6 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 
 from .models import Balance
-from .forms import AddBalanceForm
 
 def register(request):
     if request.method == 'POST':
@@ -56,17 +55,12 @@ def login_view(request):
 def index(request):
     return render(request, 'index.html')
 
-def add_balance(request, user_id):
-    balance = Balance.objects.get(user_id=user_id)
+from django.shortcuts import render, redirect
+from .models import Balance
 
-    if request.method == 'POST':
-        form = AddBalanceForm(request.POST)
-        if form.is_valid():
-            amount = form.cleaned_data['amount']
-            balance.balance += amount
-            balance.save()
-            return redirect('balance_detail', user_id=user_id)
-    else:
-        form = AddBalanceForm()
 
-    return render(request, 'balance/add_balance.html', {'form': form, 'user_id': user_id})
+def balance(request):
+    # Lógica para lidar com a exibição do saldo do usuário
+    # e permitir adicionar ou retirar dinheiro
+
+    return render(request, 'balance.html')
